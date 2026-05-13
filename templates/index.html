@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveLegal AI &mdash; Traffic Law Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="road-bg" aria-hidden="true">
+    <div class="lane-line"></div>
+    <div class="lane-line"></div>
+    <div class="lane-line"></div>
+    <div class="lane-line"></div>
+    <div class="lane-line"></div>
+  </div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <div id="offlineBadge" role="status">OFFLINE MODE</div>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon" aria-hidden="true">DL</div>
+      <div class="logo-text">
+        <div class="logo-name">DriveLegal</div>
+        <div class="logo-sub">Traffic Law Intelligence</div>
+      </div>
+    </div>
+    <div class="header-badges">
+      <div class="badge badge-live">Live AI</div>
+      <div class="badge badge-geo">Geo-Fenced</div>
+    </div>
+  </header>
+
+  <div class="ticker" aria-label="Traffic law highlights">
+    <div class="ticker-inner" id="tickerInner">
+      <div class="ticker-item"><span>IND</span>Overspeeding: Rs. 1,000-2,000 / First offense</div>
+      <div class="ticker-item"><span>IND</span>No Helmet: Rs. 1,000 / License suspension 3 months</div>
+      <div class="ticker-item"><span>IND</span>Drunk Driving: Rs. 10,000 + 6 months imprisonment</div>
+      <div class="ticker-item"><span>IND</span>Red Light Jump: Rs. 1,000-5,000</div>
+      <div class="ticker-item"><span>IND</span>No Seatbelt: Rs. 1,000 / Motor Vehicles Act 1988</div>
+      <div class="ticker-item"><span>IND</span>Triple Riding: Rs. 2,000 / Two-wheeler violation</div>
+      <div class="ticker-item"><span>IND</span>Using Mobile While Driving: Rs. 5,000</div>
+      <div class="ticker-item"><span>IND</span>Overspeeding: Rs. 1,000-2,000 / First offense</div>
+      <div class="ticker-item"><span>IND</span>No Helmet: Rs. 1,000 / License suspension 3 months</div>
+      <div class="ticker-item"><span>IND</span>Drunk Driving: Rs. 10,000 + 6 months imprisonment</div>
+      <div class="ticker-item"><span>IND</span>Red Light Jump: Rs. 1,000-5,000</div>
+      <div class="ticker-item"><span>IND</span>No Seatbelt: Rs. 1,000 / Motor Vehicles Act 1988</div>
+      <div class="ticker-item"><span>IND</span>Triple Riding: Rs. 2,000 / Two-wheeler violation</div>
+      <div class="ticker-item"><span>IND</span>Using Mobile While Driving: Rs. 5,000</div>
+    </div>
+  </div>
+
+  <nav class="location-bar" aria-label="Region selector">
+    <span class="loc-label">Region:</span>
+    <button class="loc-chip active" type="button" onclick="selectRegion(this,'India')" data-region="India">India</button>
+    <button class="loc-chip" type="button" onclick="selectRegion(this,'Telangana')" data-region="Telangana, India">Telangana</button>
+    <button class="loc-chip" type="button" onclick="selectRegion(this,'Maharashtra')" data-region="Maharashtra, India">Maharashtra</button>
+    <button class="loc-chip" type="button" onclick="selectRegion(this,'USA')" data-region="United States">USA</button>
+    <button class="loc-chip" type="button" onclick="selectRegion(this,'UK')" data-region="United Kingdom">UK</button>
+    <button class="loc-chip" type="button" onclick="selectRegion(this,'EU')" data-region="European Union">EU</button>
+    <button class="loc-chip" type="button" onclick="selectRegion(this,'Singapore')" data-region="Singapore">Singapore</button>
+  </nav>
+
+  <main class="chat-wrapper">
+    <section class="chat-messages" id="chatMessages" aria-live="polite">
+      <div class="welcome-card">
+        <div class="welcome-title">DRIVELEGAL AI</div>
+        <div class="welcome-desc">
+          Your geo-aware traffic law assistant. I provide <strong>location-specific fines, violation rules, and challan calculations</strong>
+          based on national legislation and local enforcement regulations. Ask me anything about traffic laws worldwide.
+        </div>
+        <div class="quick-chips">
+          <button class="quick-chip" type="button" onclick="sendQuick(this)">Overspeeding fine in Telangana?</button>
+          <button class="quick-chip" type="button" onclick="sendQuick(this)">DUI penalties in India?</button>
+          <button class="quick-chip" type="button" onclick="sendQuick(this)">Mobile phone while driving?</button>
+          <button class="quick-chip" type="button" onclick="sendQuick(this)">Helmet laws for two-wheelers?</button>
+          <button class="quick-chip" type="button" onclick="sendQuick(this)">Calculate my challan</button>
+          <button class="quick-chip" type="button" onclick="sendQuick(this)">Compare India vs USA fines</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="input-area" aria-label="Chat input">
+      <div class="input-row">
+        <textarea id="userInput" rows="1" placeholder="Ask about traffic laws, fines, violations... e.g. 'What is the fine for jumping a red light in Hyderabad?'" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="calc-btn" type="button" onclick="triggerChallan()" title="Challan Calculator" aria-label="Challan calculator">C</button>
+        <button class="send-btn" id="sendBtn" type="button" onclick="sendMessage()" aria-label="Send message">&gt;</button>
+      </div>
+      <div class="input-hints">
+        <button class="hint-tag" type="button" onclick="insertHint(this)">overspeeding</button>
+        <button class="hint-tag" type="button" onclick="insertHint(this)">no helmet</button>
+        <button class="hint-tag" type="button" onclick="insertHint(this)">drunk driving</button>
+        <button class="hint-tag" type="button" onclick="insertHint(this)">challan calculator</button>
+        <button class="hint-tag" type="button" onclick="insertHint(this)">red light jump</button>
+        <button class="hint-tag" type="button" onclick="insertHint(this)">no seatbelt</button>
+        <button class="hint-tag" type="button" onclick="insertHint(this)">vehicle documents</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
